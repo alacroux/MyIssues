@@ -20,28 +20,28 @@ var Handler = function (http) {
     // Init of the socket
     io = socketio(http);
     // On connection of a new socket, we send the current issues list
-    io.on('connection', listIssues);
+    io.on('connection', this.listIssues);
 }
 
-var listIssues = function () {
+Handler.prototype.listIssues = function () {
     var optionsRequest = {
         url: issuesUrl,
         headers: { 'User-Agent': repoOwner } // Mandatory by GitHub API
     }
     
-    return request(optionsRequest, function (error, response, body) {
-        var res;
+    request(optionsRequest, function (error, response, body) {
+        var result;
         if (!error && response.statusCode === 200) {
             var issues = JSON.parse(body);
             logger.log(issues.length + ' issues retrieved');
-            res = issues;
+            result = issues;
         }
         else {
             logger.error("Error while calling GitHub API", error);
-            res = null;
+            result = null;
         }
         // Send the result on the socket
-        io.emit('init', res);
+        io.emit('init', result);
     });
 }
 
