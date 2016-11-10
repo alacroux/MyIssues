@@ -1,0 +1,23 @@
+{
+    "name": "my_issues",
+    "version": "1.0.0",
+    "description": "Real-time web-based Guthub issue board",
+    "person": { 
+        "name" : "Alexandre Lacroux", 
+        "email" : "lacroux.alex@gmail.com",
+        "url" : "https://github.com/alacroux"
+    },
+    "dependencies": {
+        "express": "latest",
+        "socket.io": "1.5.0",
+        "request": "latest",
+        "underscore": "latest",
+        "githubhook": "latest"
+    },
+    "devDependencies": {
+        "chai": "*",
+        "mocha": "*"
+    },
+    "private": true,
+    "main": "app.js"
+}

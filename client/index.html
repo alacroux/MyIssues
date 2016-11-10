@@ -1,0 +1,78 @@
+<!doctype html>
+<html ng-app="MyIsues">
+    <head>
+        <title>My Issues</title>
+        <style type="text/css">
+            table {
+                border: 3px solid grey;
+                border-collapse: collapse;
+            }
+            tr, td, th {
+                border: 1px solid grey;
+                padding: 5px;
+            }
+        </style>
+    </head>    
+    <body ng-controller="AppCtrl">
+        <div id="error">{{error}}</div>   
+        
+        <div id="issues">
+            <table>
+                <tr>
+                    <th>Number</th>
+                    <th>State</th>
+                    <th>Title</th>
+                    <th>Descirption</th>
+                </tr>
+                <tr ng-repeat="issue in issues">
+                    <td>{{issue.number}}</td>
+                    <td>{{issue.state}}</td>
+                    <td>{{issue.title}}</td>
+                    <td>{{issue.body}}</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+    
+    <script type="text/javascript"
+		src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    
+    <script>
+        // Angular app
+        var myIssues = angular.module("MyIsues", []);
+
+        // Angular controller of the app
+        myIssues.controller('AppCtrl', ['$scope', function($scope) {
+            
+            // Init of the socket
+            var socket = io.connect();
+            
+            // On init event
+            socket.on('init', function (issues) {
+                if(issues === null) {
+                    $scope.error = "Unable to get issues from server";
+                }
+                else {
+                    $scope.issues = issues;
+                    $scope.$apply();
+                }
+            });
+            
+            // On update event
+            socket.on('update', function (issue) {
+                var index = _.findIndex($scope.issues, {id: issue.id});
+                if( index !== undefined ) {
+                    $scope.issues[index] = issue;
+                }
+                else {
+                    $scope.issues.push(issue);
+                }
+                $scope.$apply();
+            });
+        
+        }]);
+    </script>
+</html>
